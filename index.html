@@ -72,7 +72,7 @@ img.photo {
                 
             var imglink = "http://www.flickr.com/photos/suyun/" + item.id +"/in/photostream/";
             
-            var img = $('<img />').attr('src', imgurl).attr('class', 'photo').attr('title', item.title);
+            var img = $('<img />').attr('src', imgurl).attr('target', '_blank').attr('class', 'photo').attr('title', item.title);
             /**
             if (i == length - 1) {
                 img.load(function (){
