@@ -6,6 +6,7 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
+<title>{{ page.title }}</title>
 <style type="text/css">
 body {
     background-color: #EEE;
@@ -103,26 +104,10 @@ img.photo {
     }
     
     $(function (){
-        $(document).click(function(e){
-            console.log(e.clientY);
-        });
         $(window).scroll(function () { 
-            /**
-            var winH = $(window).height(); 
-            var pageH = $(document.body).height();  // 页面总高度 
-            var scrollT = $(window).scrollTop();    // 滚动条top 
-            var aa = (pageH - scrollT)/pageH; 
-            console.log(aa); **/
-            //var div = $('#gallary > div:last');
-            //if (div.offset().top + div.height() ){}
-            //console.log($(window).scrollTop());
             var winH = $(window).height();
             var pageH = $(document.body).height();
             var scrollT = $(window).scrollTop();
-            //console.log('>>');
-            //console.log(pageH);
-            //console.log(winH);
-            //console.log(scrollT);
             var factor = ((winH + scrollT - pageH)/pageH);
             
             if (factor > 0) loadPhotos();
@@ -134,6 +119,5 @@ img.photo {
 </head>
 <body>
     <div id="gallary"></div>
-    <!--<div id="loader" onclick="loadPhotos()">Load More...</div>-->
 </body>
 </html>
