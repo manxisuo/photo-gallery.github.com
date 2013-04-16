@@ -1,14 +1,62 @@
 ---
-layout: default
-title: A Blog for Manxisuo
+title: P. Log
 ---
-<h1>文章列表</h1>
-<ul>
-	{% for post in site.posts %}
-	<li>
-        <span>{{ post.date | date_to_string }} </span>
-        »
-        <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
-    </li>
-	{% endfor %}
-</ul>
+<html>
+<head>
+<style type="text/css">
+body {
+    background-color: #EEE;
+}
+.photo {
+    margin: 5px;
+    width: 500px;
+}
+</style>
+<script type="text/javascript" src="jquery-1.9.1.min.js"></script>
+<script type="text/javascript">
+    function addScriptTag(src){
+         var script = document.createElement('script');
+         script.setAttribute("type","text/javascript");
+         script.src = src;
+         document.body.appendChild(script);
+     }
+
+     function result(data) {
+        var gallary = $('#gallary');
+        $.each(data.photos.photo, function(i, item){
+            var imgurl = "http://farm" + item.farm + ".staticflickr.com/" + item.server 
+                + "/" + item.id + "_" + item.secret + ".jpg";
+                
+            var imglink = "http://www.flickr.com/photos/suyun/" + item.id +"/in/photostream/";
+
+            var img = $('<img />');
+            img.attr('src', imgurl).attr('class', 'photo').attr('title', item.title);
+            
+            var a = $('<a />')
+            a.attr('href', imglink);
+            a.append(img);
+            gallary.append(a);
+            
+            console.log(item);
+        });
+     }
+     
+    $(function (){
+        var url = "http://api.flickr.com/services/rest/?"
+            + "&method=flickr.people.getPublicPhotos"
+            + "&api_key=9c9759651cdfb1accdfca2dfdef0e68a"
+            + "&user_id=44093770@N04"
+            + "&format=json"
+            + "&per_page=6"
+            + "&page=1"
+            + "&jsoncallback=result"
+        addScriptTag(url);
+    });
+
+</script>
+</head>
+<body>
+    <div id="gallary"></div>
+</body>
+</html>
+
