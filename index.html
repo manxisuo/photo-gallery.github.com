@@ -1,62 +1,139 @@
 ---
 title: P. Log
 ---
+<!DOCTYPE html
+PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
 <style type="text/css">
 body {
     background-color: #EEE;
 }
-.photo {
-    margin: 5px;
-    width: 500px;
+#gallary {
+    width: 1040px;    
+}
+div.box {
+    width: 320px;
+    margin: 10px;
+    padding: 0;
+    display: inline-block;
+}
+img.photo {
+    margin: 0;
+    padding: 0;
+    width: 320px;
+}
+#loader {
+    position: fixed;
+    bottom: 0;
+    text-align: center;
+    background-color: gray;
+    width: 100%;
+    height: 50px;
 }
 </style>
-<script type="text/javascript" src="js/lib/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="jquery-1.9.1.min.js"></script>
 <script type="text/javascript">
-    function addScriptTag(src){
-         var script = document.createElement('script');
-         script.setAttribute("type","text/javascript");
-         script.src = src;
-         document.body.appendChild(script);
-     }
-
-     function result(data) {
-        var gallary = $('#gallary');
-        $.each(data.photos.photo, function(i, item){
-            var imgurl = "http://farm" + item.farm + ".staticflickr.com/" + item.server 
-                + "/" + item.id + "_" + item.secret + ".jpg";
-                
-            var imglink = "http://www.flickr.com/photos/suyun/" + item.id +"/in/photostream/";
-
-            var img = $('<img />');
-            img.attr('src', imgurl).attr('class', 'photo').attr('title', item.title);
-            
-            var a = $('<a />')
-            a.attr('href', imglink);
-            a.append(img);
-            gallary.append(a);
-            
-            console.log(item);
-        });
-     }
-     
-    $(function (){
+    var UNIT = 6;
+    var pages = 0;
+    var timer = -1;
+    
+    function getData(page, recordsPerPage, callbackName){
         var url = "http://api.flickr.com/services/rest/?"
             + "&method=flickr.people.getPublicPhotos"
             + "&api_key=9c9759651cdfb1accdfca2dfdef0e68a"
             + "&user_id=44093770@N04"
             + "&format=json"
-            + "&per_page=6"
-            + "&page=1"
-            + "&jsoncallback=result"
-        addScriptTag(url);
-    });
+            + "&per_page=" + recordsPerPage
+            + "&page=" + page
+            + "&jsoncallback=" + callbackName
+        $('#js').remove();
+         var script = document.createElement('script');
+         script.setAttribute("type","text/javascript");
+         script.setAttribute("id","js");
+         script.src = url;
+         document.body.appendChild(script);
+     }
+     
+    // 加载更多图片。
+    function loadPhotos() {
+        pages ++;
+        getData(pages, UNIT, 'appendPhotos');
+    }
 
+    function appendPhotos(data) {
+        var gallary = $('#gallary');
+        var length = data.photos.photo.length;
+        $.each(data.photos.photo, function(i, item){
+            var imgurl = "http://farm" + item.farm + ".staticflickr.com/" + item.server 
+                + "/" + item.id + "_" + item.secret + ".jpg";
+                
+            var imglink = "http://www.flickr.com/photos/suyun/" + item.id +"/in/photostream/";
+            
+            var img = $('<img />').attr('src', imgurl).attr('class', 'photo').attr('title', item.title);
+            /**
+            if (i == length - 1) {
+                img.load(function (){
+                    scrollToBottom();
+                    scrollBy(0, 100)
+                });    
+            }
+            **/
+
+            var a = $('<a />').attr('href', imglink);
+            var div = $('<div />').attr('class', 'box');
+            
+            img.appendTo(a);
+            a.appendTo(div);
+            div.appendTo(gallary);
+        });
+    }
+    
+    // 滚动到底部
+    function scrollToBottom() {
+        clearInterval(timer);
+        var scrollT = $(window).scrollTop();
+        timer = setInterval(function (){
+            window.scrollBy(0, 10);
+            var curScrollT = $(window).scrollTop();
+            if ($(window).scrollTop() == scrollT)clearInterval(timer);
+            scrollT = curScrollT;
+        }, 10);
+    }
+    
+    $(function (){
+        $(document).click(function(e){
+            console.log(e.clientY);
+        });
+        $(window).scroll(function () { 
+            /**
+            var winH = $(window).height(); 
+            var pageH = $(document.body).height();  // 页面总高度 
+            var scrollT = $(window).scrollTop();    // 滚动条top 
+            var aa = (pageH - scrollT)/pageH; 
+            console.log(aa); **/
+            //var div = $('#gallary > div:last');
+            //if (div.offset().top + div.height() ){}
+            //console.log($(window).scrollTop());
+            var winH = $(window).height();
+            var pageH = $(document.body).height();
+            var scrollT = $(window).scrollTop();
+            //console.log('>>');
+            //console.log(pageH);
+            //console.log(winH);
+            //console.log(scrollT);
+            var factor = ((winH + scrollT - pageH)/pageH);
+            
+            if (factor > 0) loadPhotos();
+        }); 
+        
+        loadPhotos();
+    }); 
 </script>
 </head>
 <body>
     <div id="gallary"></div>
+    <!--<div id="loader" onclick="loadPhotos()">Load More...</div>-->
 </body>
 </html>
-
