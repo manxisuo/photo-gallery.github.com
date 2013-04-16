@@ -72,17 +72,8 @@ img.photo {
                 
             var imglink = "http://www.flickr.com/photos/suyun/" + item.id +"/in/photostream/";
             
-            var img = $('<img />').attr('src', imgurl).attr('target', '_blank').attr('class', 'photo').attr('title', item.title);
-            /**
-            if (i == length - 1) {
-                img.load(function (){
-                    scrollToBottom();
-                    scrollBy(0, 100)
-                });    
-            }
-            **/
-
-            var a = $('<a />').attr('href', imglink);
+            var img = $('<img />').attr('src', imgurl).attr('class', 'photo').attr('title', item.title);
+            var a = $('<a />').attr('href', imglink).attr('target', '_blank');
             var div = $('<div />').attr('class', 'box');
             
             img.appendTo(a);
