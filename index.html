@@ -10,6 +10,7 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 <style type="text/css">
 body {
     background-color: #EEE;
+    margin: 0;
 }
 #gallary {
     width: 1040px;    
@@ -25,18 +26,18 @@ img.photo {
     padding: 0;
     width: 320px;
 }
-#loader {
+.loading-tip {
     position: fixed;
-    bottom: 0;
-    text-align: center;
-    background-color: gray;
-    width: 100%;
-    height: 50px;
+    width: 287px;
+    height: 141px;
+    background-color: #bbb;
+    background: url(plog/img/loading.gif) no-repeat;
+    display: none;
 }
 </style>
-<script type="text/javascript" src="{{ site.baseurl }}/js/lib/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="{{ baseurl }}/js/lib/jquery-1.9.1.min.js"></script>
 <script type="text/javascript">
-    var UNIT = 6;
+    var UNIT = 1;
     var pages = 0;
     var timer = -1;
     
@@ -61,6 +62,7 @@ img.photo {
     function loadPhotos() {
         pages ++;
         getData(pages, UNIT, 'appendPhotos');
+        popLoadingTips();
     }
 
     function appendPhotos(data) {
@@ -72,9 +74,9 @@ img.photo {
                 
             var imglink = "http://www.flickr.com/photos/suyun/" + item.id +"/in/photostream/";
             
-            var img = $('<img />').attr('src', imgurl).attr('class', 'photo').attr('title', item.title);
+            var img = $('<img />').attr('src', imgurl).addClass('photo').attr('title', item.title);
             var a = $('<a />').attr('href', imglink).attr('target', '_blank');
-            var div = $('<div />').attr('class', 'box');
+            var div = $('<div />').addClass('box');
             
             img.appendTo(a);
             a.appendTo(div);
@@ -94,15 +96,64 @@ img.photo {
         }, 10);
     }
     
-    $(function (){
-        $(window).scroll(function () { 
-            var winH = $(window).height();
-            var pageH = $(document.body).height();
-            var scrollT = $(window).scrollTop();
-            var factor = ((winH + scrollT - pageH)/pageH);
-            
-            if (factor > 0) loadPhotos();
+    // 弹出加载提示
+    function popLoadingTips() {
+        var tipDiv = $('<div />').addClass('loading-tip').appendTo($('body')).show();
+        var left = ($(window).width() - tipDiv.width())/2;
+        var top = ($(window).height() - tipDiv.height())/2;
+        tipDiv.css({left: left, top: top});
+        tipDiv.hide().show(0, function(){
+            var _this = $(this);
+            setTimeout(function() {
+                _this.hide();
+            }, 1500);
+        });
+    }
+    
+    // 检查垂直滚动条是否已经到底
+    function isScrollerBottom() {
+        var winH = $(window).height();
+        var pageH = $(document.body).height();
+        var scrollT = $(window).scrollTop();
+        
+        if(winH + scrollT == pageH) {
+            return true;
+        }
+        else {
+            return false;    
+        }
+    }
+    
+    // 检查是否存在垂直滚动条
+    function hasVerticalScroller() {
+        return (document.documentElement.clientHeight < document.body.offsetHeight);
+    }
+       
+    $(function (){       
+        // 有滚动条时，当滚动到底部时，加载图片。
+        $(window).scroll(function() { 
+            if(isScrollerBottom()) {
+                loadPhotos();
+            }
         }); 
+        
+        // 没有滚动条时，只要向下滚动鼠标滚轮，就加载图片。
+        $(window).on('mousewheel', function(e){
+            var winW = $(window).width();
+            var pageW = $(document.body).width();
+            
+            // 当向下滚动鼠标滚轮时
+            if(e.originalEvent.wheelDeltaY < 0) {
+                // 当没有出现垂直滚动条(注意要把body的水平margin设为0才有效)时
+                if(!hasVerticalScroller()) {
+                    loadPhotos();
+                }
+                // 当有滚动条但滚动条在底部时
+                else if(isScrollerBottom()){
+                    loadPhotos();
+                }
+            }
+        });        
         
         loadPhotos();
     }); 
