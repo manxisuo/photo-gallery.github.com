@@ -1,16 +1,27 @@
----
-title: P. Log
----
 <!DOCTYPE html
 PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-<title>{{ page.title }}</title>
+<title>P. Log</title>
 <style type="text/css">
 body {
     background-color: #EEE;
     margin: 0;
+}
+#tips {
+    position: fixed;
+    top: 0;
+    background-color: #a00;
+    color: #eee;
+    border-bottom: 5px solid #fff;
+    padding: 5px;
+    width: 100%;
+}
+#tips .close {
+    float: right;
+    margin-right: 20px;
+    cursor: pointer;
 }
 #gallary {
     width: 1040px;    
@@ -31,13 +42,14 @@ img.photo {
     width: 287px;
     height: 141px;
     background-color: #bbb;
+
     background: url({{ baseurl }}/img/loading.gif) no-repeat;
     display: none;
 }
 </style>
 <script type="text/javascript" src="{{ baseurl }}/js/lib/jquery-1.9.1.min.js"></script>
 <script type="text/javascript">
-    var UNIT = 1;
+    var UNIT = 3;
     var pages = 0;
     var timer = -1;
     
@@ -63,7 +75,6 @@ img.photo {
         pages ++;
         getData(pages, UNIT, 'appendPhotos');
         popLoadingTips();
-        console.log(111);
     }
 
     function appendPhotos(data) {
@@ -135,10 +146,12 @@ img.photo {
         // 当没有出现垂直滚动条(注意要把body的水平margin设为0才有效)时
         if(!hasVerticalScroller()) {
             loadPhotos();
+            console.log('down');
         }
         // 当有滚动条但滚动条在底部时
         else if(isScrollerBottom()){
             loadPhotos();
+            console.log('down');
         }
     }
        
@@ -147,6 +160,7 @@ img.photo {
         $(window).scroll(function() { 
             if(isScrollerBottom()) {
                 loadPhotos();
+                console.log('scroll');
             }
         }); 
         
@@ -165,11 +179,16 @@ img.photo {
             }
         });
         
+        $('#tips .close').on('click', function() {
+            $('#tips').remove();
+        });
+        
         loadPhotos();
     }); 
 </script>
 </head>
 <body>
+    <div id="tips">点击向下键、滚动鼠标滚轮或滑动滚动条到底部，以加载更多图片。<button class="close">close</button></div>
     <div id="gallary"></div>
 </body>
 </html>
