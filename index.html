@@ -96,18 +96,6 @@ img.photo {
         });
     }
     
-    // 滚动到底部
-    function scrollToBottom() {
-        clearInterval(timer);
-        var scrollT = $(window).scrollTop();
-        timer = setInterval(function (){
-            window.scrollBy(0, 10);
-            var curScrollT = $(window).scrollTop();
-            if ($(window).scrollTop() == scrollT)clearInterval(timer);
-            scrollT = curScrollT;
-        }, 10);
-    }
-    
     // 弹出加载提示
     function popLoadingTips() {
         var tipDiv = $('<div />').addClass('loading-tip').appendTo($('body')).show();
@@ -146,12 +134,10 @@ img.photo {
         // 当没有出现垂直滚动条(注意要把body的水平margin设为0才有效)时
         if(!hasVerticalScroller()) {
             loadPhotos();
-            console.log('down');
         }
         // 当有滚动条但滚动条在底部时
         else if(isScrollerBottom()){
             loadPhotos();
-            console.log('down');
         }
     }
        
@@ -160,7 +146,6 @@ img.photo {
         $(window).scroll(function() { 
             if(isScrollerBottom()) {
                 loadPhotos();
-                console.log('scroll');
             }
         }); 
         
