@@ -63,6 +63,7 @@ img.photo {
         pages ++;
         getData(pages, UNIT, 'appendPhotos');
         popLoadingTips();
+        console.log(111);
     }
 
     function appendPhotos(data) {
@@ -128,32 +129,41 @@ img.photo {
     function hasVerticalScroller() {
         return (document.documentElement.clientHeight < document.body.offsetHeight);
     }
+    
+    // 处理滚动条的滚动事件无法处理的情况
+    function handleNonScrollEvent() {
+        // 当没有出现垂直滚动条(注意要把body的水平margin设为0才有效)时
+        if(!hasVerticalScroller()) {
+            loadPhotos();
+        }
+        // 当有滚动条但滚动条在底部时
+        else if(isScrollerBottom()){
+            loadPhotos();
+        }
+    }
        
     $(function (){       
-        // 有滚动条时，当滚动到底部时，加载图片。
+        // 当滚动条事件发生时。
         $(window).scroll(function() { 
             if(isScrollerBottom()) {
                 loadPhotos();
             }
         }); 
         
-        // 没有滚动条时，只要向下滚动鼠标滚轮，就加载图片。
+        // 当鼠标滚轮向下滚动时。
         $(window).on('mousewheel', function(e){
-            var winW = $(window).width();
-            var pageW = $(document.body).width();
-            
             // 当向下滚动鼠标滚轮时
             if(e.originalEvent.wheelDeltaY < 0) {
-                // 当没有出现垂直滚动条(注意要把body的水平margin设为0才有效)时
-                if(!hasVerticalScroller()) {
-                    loadPhotos();
-                }
-                // 当有滚动条但滚动条在底部时
-                else if(isScrollerBottom()){
-                    loadPhotos();
-                }
+                handleNonScrollEvent();
             }
-        });        
+        });
+        
+        // 当按下Down按钮时
+        $(window).on('keydown', function(e) {
+            if (e.which == 40) {
+                handleNonScrollEvent();
+            }
+        });
         
         loadPhotos();
     }); 
