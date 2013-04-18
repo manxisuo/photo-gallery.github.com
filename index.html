@@ -57,6 +57,12 @@ img.photo {
     var pages = 0;
     var timer = -1;
     
+    function printLog(msg) {
+        if(console.log) {
+            console.log(msg);
+        }
+    }
+    
     function getData(page, recordsPerPage, callbackName){
         var url = "http://api.flickr.com/services/rest/?"
             + "&method=flickr.people.getPublicPhotos"
@@ -79,7 +85,7 @@ img.photo {
         pages ++;
         getData(pages, UNIT, 'appendPhotos');
         popLoadingTips();
-        console.log('Loading');
+        printLog('Loading...');
     }
 
     function appendPhotos(data) {
