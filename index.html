@@ -153,21 +153,13 @@ img.photo {
             }
         }); 
         
-        // 当鼠标滚轮向下滚动时(For Explorer except FF)。
-        $(window).on('mousewheel', function(e){
-            // 当向下滚动鼠标滚轮时
-            if(e.originalEvent.wheelDeltaY < 0) {
+        // 当鼠标滚轮向下滚动时。
+        $(window).on('mousewheel DOMMouseScroll', function(e){
+            // 当向下滚动鼠标滚轮时(detail for Firefox, wheelDeltaY for Non-Firefox)
+            if(e.originalEvent.wheelDeltaY < 0 || e.originalEvent.detail > 0) {
                 handleNonScrollEvent();
             }
-        });
-        
-        // 当鼠标滚轮向下滚动时(For FF)。
-        $(window).on('DOMMouseScroll', function(e){
-            // 当向下滚动鼠标滚轮时
-            if(e.originalEvent.wheelDeltaY > 0) {
-                handleNonScrollEvent();
-            }
-        });        
+        });    
         
         // 当按下Down按钮时
         $(window).on('keydown', function(e) {
