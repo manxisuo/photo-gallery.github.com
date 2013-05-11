@@ -1,4 +1,4 @@
-plog
-====
+Photo Gallery
+================
 
-Picture Log
+A blog for my photos
