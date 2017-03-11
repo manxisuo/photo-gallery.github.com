@@ -64,7 +64,7 @@ img.photo {
     }
     
     function getData(page, recordsPerPage, callbackName){
-        var url = "http://api.flickr.com/services/rest/?"
+        var url = "https://api.flickr.com/services/rest/?"
             + "&method=flickr.people.getPublicPhotos"
             + "&api_key=9c9759651cdfb1accdfca2dfdef0e68a"
             + "&user_id=44093770@N04"
@@ -92,10 +92,10 @@ img.photo {
         var gallary = $('#gallary');
         var length = data.photos.photo.length;
         $.each(data.photos.photo, function(i, item){
-            var imgurl = "http://farm" + item.farm + ".staticflickr.com/" + item.server 
+            var imgurl = "https://farm" + item.farm + ".staticflickr.com/" + item.server 
                 + "/" + item.id + "_" + item.secret + ".jpg";
                 
-            var imglink = "http://www.flickr.com/photos/suyun/" + item.id +"/in/photostream/";
+            var imglink = "https://www.flickr.com/photos/suyun/" + item.id +"/in/photostream/";
             
             var img = $('<img />').attr('src', imgurl).addClass('photo').attr('title', item.title);
             var a = $('<a />').attr('href', imglink).attr('target', '_blank');
